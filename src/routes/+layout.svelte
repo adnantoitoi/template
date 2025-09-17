@@ -11,7 +11,7 @@
 	let scrollY = $state()
 	let innerWidth = $state()
 
-	let authVisible = $state(false)
+	let authVisible = $state(true)
 	let sideNavVisible = $state(false)
 </script>
 
@@ -22,7 +22,7 @@
 
 
 <div class="screen">
-	<div class="nav p-3 flex items-center justify-between border-b-1">
+	<nav class="nav p-3 flex items-center justify-between border-b-1">
 		<a href="/">
 			<Logo/>
 		</a>
@@ -30,16 +30,19 @@
 		<div class="links flex gap-3 items-center">
 			<NavLink to="/about" name="About"/>
 			<NavLink to="/contact" name="Contact"/>
-			<button onclick={()=>{authVisible = true}}>
+			{#if $page.url.pathname != '/register' && $page.url.pathname != '/login'}
+				<button onclick={()=>{authVisible = true}}>
 				<Icon icon="prime:user" class="text-4xl hover:brightness-70"/>
 			</button>
+			{/if}
+			
 		</div>
-	</div>
+	</nav>
 
 	<div class="page">
 		{@render children?.()}
 	</div>
-	{#if authVisible}
+	{#if authVisible && $page.url.pathname != '/register' && $page.url.pathname != '/login'}
 		{@render auth()}
 	{/if}
 	
@@ -51,12 +54,30 @@
 
 
 {#snippet auth()}
-	<div transition:fly={{x:500,duration:500}} class="p-4 py-6 h-dvh w-[30vw] absolute bg-surface-900 border-l-1 top-0 right-0">
+	<div transition:fly={{x:500,duration:500}} class="p-4 py-6 h-dvh w-full md:w-[70vw] lg:w-[30vw] absolute bg-surface-900 lg:border-l-1 top-0 right-0">
 		<div class="flex w-full flex-row-reverse">
 			<button onclick={()=>{authVisible = false}}>
 				<Icon icon="line-md:close-circle" class="text-4xl hover:brightness-70"/>
 			</button>
 		</div>
+		<form action="?/login" method="post" class="flex flex-col h-8/10 items-center justify-between">
+			<div class="container w-full">
+				<h1 class="h1 md:h2 text-center font-bold">Sign in</h1>
+				<label for="email">Username/Email</label>
+				<input type="text" class="input">
+				<label for="password">password</label>
+				<input type="password" class="input">
+				<div class="flex items-center p-3"></div>
+				<button class="btn bg-primary-500 w-full">Sign in</button>
+			</div>
+			<div class="container w-full border-1 border-surface-500 p-3 flex items-center justify-around">
+				<div class="flex flex-col items-center">
+					<Icon icon="prime:user" class="text-9xl text-surface-300"/>
+					<span class="text-xl w-30 text-center">Already have an account?</span>
+				</div>
+				<NavLink to="/register" name="Register" fill="primary-500"/>
+			</div>
+		</form>
 	</div>
 {/snippet}
 
