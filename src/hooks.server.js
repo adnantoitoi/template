@@ -1,7 +1,8 @@
 export async function handle({event,resolve}){
     const user = {
-        name:"smth"
+        name:"Adnan"
     }
+    console.log("smth")
     if(user){
         event.locals.user = user
     }

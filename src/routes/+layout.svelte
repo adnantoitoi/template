@@ -6,8 +6,7 @@
 	import { page } from '$app/stores';
     import Logo from '$lib/assets/Logo.svelte';
     import NavLink from '$lib/assets/NavLink.svelte';
-	let { children } = $props();
-
+	let { children,data } = $props();
 	let scrollY = $state()
 	let innerWidth = $state()
 
@@ -24,6 +23,9 @@
 <div class="screen">
 	<nav class="nav p-3 flex items-center justify-between border-b-1">
 		<a href="/">
+			{#if data.user}
+				{data.user.name}
+			{/if}
 			<Logo/>
 		</a>
 		
@@ -63,10 +65,10 @@
 		<form action="?/login" method="post" class="flex flex-col h-8/10 items-center justify-between">
 			<div class="container w-full">
 				<h1 class="h1 md:h2 text-center font-bold">Sign in</h1>
-				<label for="email">Username/Email</label>
-				<input type="text" class="input">
+				<label for="username">Username/Email</label>
+				<input type="text" id="username" name="username" class="input">
 				<label for="password">password</label>
-				<input type="password" class="input">
+				<input type="password" id="password" name="password" class="input">
 				<div class="flex items-center p-3"></div>
 				<button class="btn bg-primary-500 w-full">Sign in</button>
 			</div>
