@@ -6,12 +6,18 @@
 	import { page } from '$app/stores';
     import Logo from '$lib/assets/Logo.svelte';
     import NavLink from '$lib/assets/NavLink.svelte';
+    import { afterNavigate } from '$app/navigation';
 	let { children,data } = $props();
 	let scrollY = $state()
 	let innerWidth = $state()
 
-	let authVisible = $state(true)
+	let authVisible = $state(false)
 	let sideNavVisible = $state(false)
+
+	afterNavigate(()=>{
+		sideNavVisible = false
+		authVisible = false
+	})
 </script>
 
 <svelte:window bind:scrollY={scrollY} bind:innerWidth={innerWidth}></svelte:window>
@@ -23,13 +29,11 @@
 <div class="screen">
 	<nav class="nav p-3 flex items-center justify-between border-b-1">
 		<a href="/">
-			{#if data.user}
-				{data.user.name}
-			{/if}
 			<Logo/>
 		</a>
 		
-		<div class="links flex gap-3 items-center">
+		<div class="hidden links md:flex gap-3 items-center">
+			<NavLink to="/" name="Home"/>
 			<NavLink to="/about" name="About"/>
 			<NavLink to="/contact" name="Contact"/>
 			{#if $page.url.pathname != '/register' && $page.url.pathname != '/login'}
@@ -37,7 +41,9 @@
 				<Icon icon="prime:user" class="text-4xl hover:brightness-70"/>
 			</button>
 			{/if}
-			
+		</div>
+		<div class="md:hidden">
+			{@render sideNavToggle()}
 		</div>
 	</nav>
 
@@ -47,6 +53,9 @@
 	{#if authVisible && $page.url.pathname != '/register' && $page.url.pathname != '/login'}
 		{@render auth()}
 	{/if}
+	{#if sideNavVisible}
+		{@render sidenav()}
+	{/if}
 	
 
 </div>
@@ -54,7 +63,18 @@
 
 
 
-
+{#snippet sidenav()}
+	<nav transition:fly={{x:500,duration:500}} class="sidenav p-4 py-6 h-dvh w-full absolute bg-surface-900 lg:border-l-1 top-0 right-0">
+		<div class="links flex flex-col gap-3 items-center">
+			<NavLink to="/" name="Home"/>
+			<NavLink to="/about" name="About"/>
+			<NavLink to="/contact" name="Contact"/>
+			{#if $page.url.pathname != '/register' && $page.url.pathname != '/login'}
+				<NavLink to="/login" name="Sign in"/>
+			{/if}
+		</div>
+	</nav>
+{/snippet}
 {#snippet auth()}
 	<div transition:fly={{x:500,duration:500}} class="p-4 py-6 h-dvh w-full md:w-[70vw] lg:w-[30vw] absolute bg-surface-900 lg:border-l-1 top-0 right-0">
 		<div class="flex w-full flex-row-reverse">
@@ -75,7 +95,7 @@
 			<div class="container w-full border-1 border-surface-500 p-3 flex items-center justify-around">
 				<div class="flex flex-col items-center">
 					<Icon icon="prime:user" class="text-9xl text-surface-300"/>
-					<span class="text-xl w-30 text-center">Already have an account?</span>
+					<span class="text-xl w-30 text-center">Don't have an account?</span>
 				</div>
 				<NavLink to="/register" name="Register" fill="primary-500"/>
 			</div>
@@ -100,6 +120,8 @@
 	}
   .hamburger {
     cursor: pointer;
+	position: relative;
+	z-index: 10;
   }
 
   .hamburger input {

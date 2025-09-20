@@ -1,6 +1,6 @@
 export async function handle({event,resolve}){
     const user = {
-        name:"Adnan"
+        name:"Arian"
     }
     console.log("smth")
     if(user){
